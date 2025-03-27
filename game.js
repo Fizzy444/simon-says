@@ -148,14 +148,9 @@ function startOver() {
     started = false;
     gamePattern = [];
     level = 0;
-
-    $("#level-title").text("Game Over! Tap anywhere to Restart");
-
-    // Ensure old event listeners are removed before adding new ones
-    $(document).off("keydown click");
-
-    // Restart on key press (PC) or tap/click (Mobile)
-    $(document).one("keydown click", function () {
+    
+    // Mobile-friendly restart - tap anywhere to begin again
+    $("#game-screen").one("click", function() {
         $("#level-title").text("Level " + level);
         nextSequence();
         started = true;
