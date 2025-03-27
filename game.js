@@ -3,18 +3,30 @@ var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
 var started = false;
-var hardMode = false; // Default is easy mode
+var gameMode = "easy"; // Default mode
+var isMuted = false; // Default: Sound ON
 
 $(document).ready(function () {
     // Handle difficulty selection
     $("#easy").click(function () {
-        hardMode = false;
+        gameMode = "easy";
         startGame();
     });
 
     $("#hard").click(function () {
-        hardMode = true;
+        gameMode = "hard";
         startGame();
+    });
+
+    $("#ultra").click(function () { // Ultra Mode Button
+        gameMode = "ultra";
+        startGame();
+    });
+
+    // Mute button click event
+    $("#mute-btn").click(function () {
+        isMuted = !isMuted;
+        $("#mute-btn").text(isMuted ? "🔇 Sound Off" : "🔊 Sound On");
     });
 });
 
@@ -24,7 +36,6 @@ function startGame() {
     $("#game-screen").show();  // Show game screen
     resetGame();
 
-    // Start the game immediately after difficulty selection
     if (!started) {
         $("#level-title").text("Level " + level);
         nextSequence();
@@ -47,31 +58,58 @@ function nextSequence() {
     level++;
     $("#level-title").text("Level " + level);
 
-    var randomNumber = Math.floor(Math.random() * 4);
-    var randomChosenColour = buttonColours[randomNumber];
-    gamePattern.push(randomChosenColour);
-
-    if (!hardMode) {
-        // EASY MODE: Repeat full sequence
-        for (let i = 0; i < gamePattern.length; i++) {
-            setTimeout(() => {
-                animatePress(gamePattern[i]);
-                playSound(gamePattern[i]);
-            }, i * 500); // Slower delay to help remember
-        }
+    if (gameMode === "ultra") {
+        playUltraMode();
     } else {
-        // HARD MODE: Show only the new color
-        setTimeout(() => {
-            animatePress(randomChosenColour);
-            playSound(randomChosenColour);
-        }, 600);
+        var randomNumber = Math.floor(Math.random() * 4);
+        var randomChosenColour = buttonColours[randomNumber];
+        gamePattern.push(randomChosenColour);
+
+        if (gameMode === "easy") {
+            // EASY MODE: Repeat full sequence with reduced delay
+            for (let i = 0; i < gamePattern.length; i++) {
+                setTimeout(() => {
+                    animatePress(gamePattern[i]);
+                    playSound(gamePattern[i]);
+                }, i * 300); // Reduced delay
+            }
+        } else if (gameMode === "hard") {
+            // HARD MODE: Show only the new color
+            setTimeout(() => {
+                animatePress(randomChosenColour);
+                playSound(randomChosenColour);
+            }, 600);
+        }
     }
 }
 
-// Play sound function
+// Ultra Mode Logic
+function playUltraMode() {
+    var numFlashes = Math.floor(Math.random() * 3) + 1; // 1 to 3 colors
+    var ultraPattern = [];
+
+    for (let i = 0; i < numFlashes; i++) {
+        var randomColour = buttonColours[Math.floor(Math.random() * 4)];
+        ultraPattern.push(randomColour);
+    }
+
+    // Save the ultra pattern as the game pattern
+    gamePattern.push(...ultraPattern);
+
+    ultraPattern.forEach((color, i) => {
+        setTimeout(() => {
+            animatePress(color);
+            playSound(color);
+        }, i * 500);
+    });
+}
+
+// Play sound function (Respects mute state)
 function playSound(name) {
-    var audio = new Audio("sounds/" + name + ".mp3");
-    audio.play();
+    if (!isMuted) {  
+        var audio = new Audio("sounds/" + name + ".mp3");
+        audio.play();
+    }
 }
 
 // Animate button press
@@ -102,9 +140,8 @@ function checkAnswer(currentLevel) {
 // Reset the game
 function resetGame() {
     gamePattern = [];
-    userClickedPattern = [];
-    level = 0;
     started = false;
+    level = 0;
 }
 
 // Start over after game over
@@ -113,7 +150,9 @@ function startOver() {
     gamePattern = [];
     level = 0;
 
-    // Show difficulty selection again
-    $("#start-screen").show();
-    $("#game-screen").hide();
+    $(document).one("keydown", function() {
+        $("#level-title").text("Level " + level);
+        nextSequence();
+        started = true;
+    });
 }
