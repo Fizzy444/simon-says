@@ -3,8 +3,8 @@ var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
 var started = false;
-var gameMode = "easy";
-var isMuted = false;
+var gameMode = "easy"; // Default mode
+var isMuted = false; // Default: Sound ON
 
 $(document).ready(function () {
     // Handle difficulty selection
@@ -18,7 +18,7 @@ $(document).ready(function () {
         startGame();
     });
 
-    $("#ultra").click(function () {
+    $("#ultra").click(function () { // Ultra Mode Button
         gameMode = "ultra";
         startGame();
     });
@@ -28,29 +28,14 @@ $(document).ready(function () {
         isMuted = !isMuted;
         $("#mute-btn").text(isMuted ? "🔇 Sound Off" : "🔊 Sound On");
     });
-
-    // Restart button click event
-    $("#restart-btn").click(function() {
-        resetGame();
-        startGamePlay();
-    });
 });
 
+// Function to start the game
 function startGame() {
-    $("#start-screen").hide();
-    $("#game-screen").show();
-    $("#restart-btn").hide(); // Hide restart button initially
+    $("#start-screen").hide(); // Hide difficulty selection
+    $("#game-screen").show();  // Show game screen
     resetGame();
-    
-    $("#level-title").html("Press Any Key to Start<br><span class='small-text'>Difficulty: " + gameMode + "</span>");
-    
-    // Listen for key press to start
-    $(document).one("keydown", function() {
-        startGamePlay();
-    });
-}
 
-function startGamePlay() {
     if (!started) {
         $("#level-title").text("Level " + level);
         nextSequence();
@@ -58,9 +43,8 @@ function startGamePlay() {
     }
 }
 
+// User button click
 $(".btn").on("click", function () {
-    if (!started) return;
-    
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
     animatePress(userChosenColour);
@@ -68,6 +52,7 @@ $(".btn").on("click", function () {
     checkAnswer(userClickedPattern.length - 1);
 });
 
+// Next sequence generation
 function nextSequence() {
     userClickedPattern = [];
     level++;
@@ -81,13 +66,15 @@ function nextSequence() {
         gamePattern.push(randomChosenColour);
 
         if (gameMode === "easy") {
+            // EASY MODE: Repeat full sequence with reduced delay
             for (let i = 0; i < gamePattern.length; i++) {
                 setTimeout(() => {
                     animatePress(gamePattern[i]);
                     playSound(gamePattern[i]);
-                }, i * 300);
+                }, i * 300); // Reduced delay
             }
         } else if (gameMode === "hard") {
+            // HARD MODE: Show only the new color
             setTimeout(() => {
                 animatePress(randomChosenColour);
                 playSound(randomChosenColour);
@@ -96,8 +83,9 @@ function nextSequence() {
     }
 }
 
+// Ultra Mode Logic
 function playUltraMode() {
-    var numFlashes = Math.floor(Math.random() * 3) + 1;
+    var numFlashes = Math.floor(Math.random() * 3) + 1; // 1 to 3 colors
     var ultraPattern = [];
 
     for (let i = 0; i < numFlashes; i++) {
@@ -105,6 +93,7 @@ function playUltraMode() {
         ultraPattern.push(randomColour);
     }
 
+    // Save the ultra pattern as the game pattern
     gamePattern.push(...ultraPattern);
 
     ultraPattern.forEach((color, i) => {
@@ -115,13 +104,15 @@ function playUltraMode() {
     });
 }
 
+// Play sound function (Respects mute state)
 function playSound(name) {
     if (!isMuted) {  
         var audio = new Audio("sounds/" + name + ".mp3");
-        audio.play().catch(e => console.log("Audio play failed:", e));
+        audio.play();
     }
 }
 
+// Animate button press
 function animatePress(currentColour) {
     $("#" + currentColour).addClass("pressed");
     setTimeout(function () {
@@ -129,32 +120,39 @@ function animatePress(currentColour) {
     }, 100);
 }
 
+// Check user answer
 function checkAnswer(currentLevel) {
     if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
         if (userClickedPattern.length === gamePattern.length) {
             setTimeout(nextSequence, 1000);
         }
     } else {
-        gameOver();
+        playSound("wrong");
+        $("body").addClass("game-over");
+        setTimeout(() => {
+            $("body").removeClass("game-over");
+        }, 200);
+        $("#level-title").text("Game Over! Press Any Key to Restart");
+        startOver();
     }
 }
 
-function gameOver() {
-    playSound("wrong");
-    $("body").addClass("game-over");
-    
-    // Enhanced game over message with restart button
-    $("#level-title").html("Game Over!<br>Level Reached: " + (level-1) + 
-                         "<br>Difficulty: " + gameMode);
-    
-    // Show the restart button
-    $("#restart-btn").show().text("Play Again");
+// Reset the game
+function resetGame() {
+    gamePattern = [];
+    started = false;
+    level = 0;
 }
 
-function resetGame() {
+// Start over after game over
+function startOver() {
     started = false;
     gamePattern = [];
     level = 0;
-    userClickedPattern = [];
-    $("body").removeClass("game-over");
+
+    $(document).one("keydown", function() {
+        $("#level-title").text("Level " + level);
+        nextSequence();
+        started = true;
+    });
 }
