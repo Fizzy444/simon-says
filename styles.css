@@ -60,3 +60,45 @@ h1, h2 {
 .difficulty-btn:hover {
     background-color: grey;
 }
+.small-text {
+    font-size: 0.6em;
+    display: block;
+    margin-top: 10px;
+}
+
+#mute-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+#mute-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 600px) {
+    #level-title {
+        font-size: 1.2em;
+        line-height: 1.5;
+    }
+    
+    .btn {
+        height: 120px;
+        width: 120px;
+        margin: 8px;
+    }
+    
+    #mute-btn {
+        top: 10px;
+        right: 10px;
+        font-size: 0.6em;
+    }
+}
