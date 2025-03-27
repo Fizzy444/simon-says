@@ -57,7 +57,7 @@ function nextSequence() {
             setTimeout(() => {
                 animatePress(gamePattern[i]);
                 playSound(gamePattern[i]);
-            }, i * 1000); // Slower delay to help remember
+            }, i * 500); // Slower delay to help remember
         }
     } else {
         // HARD MODE: Show only the new color
