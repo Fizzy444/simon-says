@@ -102,3 +102,29 @@ h1, h2 {
         font-size: 0.6em;
     }
 }
+.restart-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 20px auto;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.restart-btn:hover {
+    background-color: #45a049;
+}
+
+.game-over .restart-btn {
+    background-color: #f44336;
+}
+
+.game-over .restart-btn:hover {
+    background-color: #d32f2f;
+}
