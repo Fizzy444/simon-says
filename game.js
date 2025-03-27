@@ -1,81 +1,121 @@
-var buttonColour = ["red", "blue", "green", "yellow"];
+var buttonColours = ["red", "blue", "green", "yellow"];
 var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
 var started = false;
+var hardMode = false; // Default is easy mode
 
-// Detect game start on both desktop & mobile
-$(document).on("keydown touchstart", function () {
-    if (!started) {
-        $("#level-title").text("Level " + level);
-        nextSequence();
-        started = true;
-    }
+$(document).ready(function () {
+	// Handle difficulty selection
+	$("#easy").click(function () {
+		hardMode = false;
+		startGame();
+	});
+
+	$("#hard").click(function () {
+		hardMode = true;
+		startGame();
+	});
 });
 
-// Handle button clicks (mobile & desktop friendly)
-$(".btn").on("click touchstart", function (event) {
-    event.preventDefault(); // Prevents double-tap zoom on mobile
+// Function to start the game
+function startGame() {
+	$("#start-screen").hide(); // Hide difficulty selection
+	$("#game-screen").show();  // Show game screen
+	resetGame();
 
-    var userChosenColour = $(this).attr("id");
-    userClickedPattern.push(userChosenColour);
-
-    animatePress(userChosenColour);
-    playSound(userChosenColour);
-    checkAnswer(userClickedPattern.length - 1);
-});
-
-// Generate next sequence
-function nextSequence() {
-    userClickedPattern = [];
-    level++;
-    $("#level-title").text("Level " + level);
-
-    var randomNumber = Math.floor(Math.random() * 4);
-    var randomChosenColour = buttonColour[randomNumber];
-    gamePattern.push(randomChosenColour);
-
-    $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
-    playSound(randomChosenColour);
+	// Start the game immediately after difficulty selection
+	if (!started) {
+		$("#level-title").text("Level " + level);
+		nextSequence();
+		started = true;
+	}
 }
 
-// Play sound (mobile optimized)
+// User button click
+$(".btn").on("click", function () {
+	var userChosenColour = $(this).attr("id");
+	userClickedPattern.push(userChosenColour);
+	animatePress(userChosenColour);
+	playSound(userChosenColour);
+	checkAnswer(userClickedPattern.length - 1);
+});
+
+// Next sequence generation
+function nextSequence() {
+	userClickedPattern = [];
+	level++;
+	$("#level-title").text("Level " + level);
+
+	var randomNumber = Math.floor(Math.random() * 4);
+	var randomChosenColour = buttonColours[randomNumber];
+	gamePattern.push(randomChosenColour);
+
+	if (!hardMode) {
+		// EASY MODE: Repeat full sequence
+		for (let i = 0; i < gamePattern.length; i++) {
+			setTimeout(() => {
+				animatePress(gamePattern[i]);
+				playSound(gamePattern[i]);
+			}, i * 600);
+		}
+	} else {
+		// HARD MODE: Show only the new color
+		setTimeout(() => {
+			animatePress(randomChosenColour);
+			playSound(randomChosenColour);
+		}, 600);
+	}
+}
+
+// Play sound function
 function playSound(name) {
-    let audio = new Audio("sounds/" + name + ".mp3");
-    audio.play().catch(error => console.log("Audio play blocked:", error));
+	var audio = new Audio("sounds/" + name + ".mp3");
+	audio.play();
 }
 
 // Animate button press
 function animatePress(currentColour) {
-    $("#" + currentColour).addClass("pressed");
-    setTimeout(function () {
-        $("#" + currentColour).removeClass("pressed");
-    }, 100);
+	$("#" + currentColour).addClass("pressed");
+	setTimeout(function () {
+		$("#" + currentColour).removeClass("pressed");
+	}, 100);
 }
 
 // Check user answer
 function checkAnswer(currentLevel) {
-    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
-        if (userClickedPattern.length === gamePattern.length) {
-            setTimeout(nextSequence, 1000);
-        }
-    } else {
-        gameOver();
-    }
+	if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+		if (userClickedPattern.length === gamePattern.length) {
+			setTimeout(nextSequence, 1000);
+		}
+	} else {
+		playSound("wrong");
+		$("body").addClass("game-over");
+		setTimeout(() => {
+			$("body").removeClass("game-over");
+		}, 200);
+		$("#level-title").text("Game Over! Press Any Key to Restart");
+		startOver();
+	}
 }
 
-// Handle game over
-function gameOver() {
-    $("body").addClass("game-over");
-    setTimeout(() => $("body").removeClass("game-over"), 200);
-
-    $("#level-title").text("Game Over, Tap to Restart");
-    startOver();
+// Reset the game
+function resetGame() {
+	gamePattern = [];
+	started = false;
+	level = 0;
 }
 
-// Restart the game
+// Start over after game over
 function startOver() {
-    started = false;
-    gamePattern = [];
-    level = 0;
+	started = false;
+	gamePattern = [];
+	level = 0;
+
+	// Listen for key press to restart
+	$(document).one("keydown", function() {
+		$("#level-title").text("Level " + level);
+		nextSequence();
+		started = true;
+	});
 }
