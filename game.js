@@ -144,19 +144,20 @@ function resetGame() {
     level = 0;
 }
 
-// Start over after game over (fix for mobile)
 function startOver() {
     started = false;
     gamePattern = [];
     level = 0;
 
-    $("#level-title").text("Game Over! Tap to Restart");
+    $("#level-title").text("Game Over! Tap anywhere to Restart");
 
-    // Restart on key press (desktop) or touch/click (mobile)
-    $(document).one("keydown touchstart", function () {
+    // Ensure old event listeners are removed before adding new ones
+    $(document).off("keydown click");
+
+    // Restart on key press (PC) or tap/click (Mobile)
+    $(document).one("keydown click", function () {
         $("#level-title").text("Level " + level);
         nextSequence();
         started = true;
     });
 }
-
