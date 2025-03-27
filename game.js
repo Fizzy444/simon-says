@@ -5,7 +5,6 @@ var level = 0;
 var started = false;
 var gameMode = "easy";
 var isMuted = false;
-var canClick = true; // Controls when user can interact
 
 $(document).ready(function () {
     // Handle difficulty selection
@@ -30,26 +29,25 @@ $(document).ready(function () {
         $("#mute-btn").text(isMuted ? "🔇 Sound Off" : "🔊 Sound On");
     });
 
-    // Mobile start - tap anywhere on game screen
-    $("#game-screen").click(function() {
-        if (!started && canClick) {
-            startGamePlay();
-        }
+    // Restart button click event
+    $("#restart-btn").click(function() {
+        resetGame();
+        startGamePlay();
     });
 });
 
 function startGame() {
     $("#start-screen").hide();
     $("#game-screen").show();
+    $("#restart-btn").hide(); // Hide restart button initially
     resetGame();
-    canClick = true;
     
-    // For mobile, show tap to start message
-    if (isMobile()) {
-        $("#level-title").html("Tap to Start<br><span class='small-text'>Difficulty: " + gameMode + "</span>");
-    } else {
-        $("#level-title").html("Press Any Key to Start<br><span class='small-text'>Difficulty: " + gameMode + "</span>");
-    }
+    $("#level-title").html("Press Any Key to Start<br><span class='small-text'>Difficulty: " + gameMode + "</span>");
+    
+    // Listen for key press to start
+    $(document).one("keydown", function() {
+        startGamePlay();
+    });
 }
 
 function startGamePlay() {
@@ -61,7 +59,7 @@ function startGamePlay() {
 }
 
 $(".btn").on("click", function () {
-    if (!started || !canClick) return;
+    if (!started) return;
     
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
@@ -142,30 +140,15 @@ function checkAnswer(currentLevel) {
 }
 
 function gameOver() {
-    canClick = false;
     playSound("wrong");
     $("body").addClass("game-over");
     
-    // Enhanced game over message
-    var gameOverMessage = "Game Over!<br>Level Reached: " + (level-1) + 
-                         "<br>Difficulty: " + gameMode +
-                         "<br><br>Tap to Restart";
+    // Enhanced game over message with restart button
+    $("#level-title").html("Game Over!<br>Level Reached: " + (level-1) + 
+                         "<br>Difficulty: " + gameMode);
     
-    $("#level-title").html(gameOverMessage);
-    
-    // Delay before allowing restart
-    setTimeout(function() {
-        $("body").removeClass("game-over");
-        canClick = true;
-        
-        // Set up restart listener
-        $("#game-screen").one("click", function() {
-            if (canClick) {
-                resetGame();
-                startGamePlay();
-            }
-        });
-    }, 2000);
+    // Show the restart button
+    $("#restart-btn").show().text("Play Again");
 }
 
 function resetGame() {
@@ -173,8 +156,5 @@ function resetGame() {
     gamePattern = [];
     level = 0;
     userClickedPattern = [];
-}
-
-function isMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    $("body").removeClass("game-over");
 }
