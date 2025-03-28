@@ -102,6 +102,45 @@ h1, h2 {
     z-index: 10;
 }
 
+/* Add these styles to your existing CSS */
+#back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid white;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    z-index: 10;
+}
+
+/* Adjust mute button position to account for back button */
+#mute-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    /* ... keep existing mute button styles ... */
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    #back-btn, #mute-btn {
+        font-size: 12px;
+        padding: 3px 6px;
+        top: 10px;
+    }
+    #back-btn {
+        left: 10px;
+    }
+    #mute-btn {
+        right: 10px;
+    }
+}
+
 /* Mobile-specific adjustments */
 @media (max-width: 600px) {
     #game-screen {
