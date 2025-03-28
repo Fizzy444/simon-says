@@ -38,6 +38,22 @@ $(document).ready(function () {
             $(this).hide();
         }
     });
+
+    $("#back-btn").click(function() {
+        // Reset game state
+        resetGame();
+        started = false;
+        gamePattern = [];
+        level = 0;
+        
+        // Hide game screen and show difficulty selection
+        $("#game-screen").hide();
+        $("#start-screen").show();
+        
+        // Reset the start/restart button for next time
+        $("#start-restart-btn").text("Start Game").show();
+        $("#level-title").text("Welcome to Simon!");
+    });
 });
 
 // Function to start the game
@@ -147,6 +163,8 @@ function resetGame() {
     gamePattern = [];
     started = false;
     level = 0;
+    userClickedPattern = [];
+    $("body").removeClass("game-over");
 }
 
 // Start over after game over
