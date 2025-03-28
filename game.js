@@ -18,7 +18,7 @@ $(document).ready(function () {
         startGame();
     });
 
-    $("#ultra").click(function () { // Ultra Mode Button
+    $("#ultra").click(function () {
         gameMode = "ultra";
         startGame();
     });
@@ -28,19 +28,24 @@ $(document).ready(function () {
         isMuted = !isMuted;
         $("#mute-btn").text(isMuted ? "🔇 Sound Off" : "🔊 Sound On");
     });
+
+    // Start/Restart button click event
+    $("#start-restart-btn").click(function() {
+        if (!started) {
+            $("#level-title").text("Level " + level);
+            nextSequence();
+            started = true;
+            $(this).hide();
+        }
+    });
 });
 
 // Function to start the game
 function startGame() {
-    $("#start-screen").hide(); // Hide difficulty selection
-    $("#game-screen").show();  // Show game screen
+    $("#start-screen").hide();
+    $("#game-screen").show();
+    $("#start-restart-btn").show().text("Start Game");
     resetGame();
-
-    if (!started) {
-        $("#level-title").text("Level " + level);
-        nextSequence();
-        started = true;
-    }
 }
 
 // User button click
@@ -71,7 +76,7 @@ function nextSequence() {
                 setTimeout(() => {
                     animatePress(gamePattern[i]);
                     playSound(gamePattern[i]);
-                }, i * 300); // Reduced delay
+                }, i * 300);
             }
         } else if (gameMode === "hard") {
             // HARD MODE: Show only the new color
@@ -93,7 +98,6 @@ function playUltraMode() {
         ultraPattern.push(randomColour);
     }
 
-    // Save the ultra pattern as the game pattern
     gamePattern.push(...ultraPattern);
 
     ultraPattern.forEach((color, i) => {
@@ -104,7 +108,7 @@ function playUltraMode() {
     });
 }
 
-// Play sound function (Respects mute state)
+// Play sound function
 function playSound(name) {
     if (!isMuted) {  
         var audio = new Audio("sounds/" + name + ".mp3");
@@ -132,7 +136,8 @@ function checkAnswer(currentLevel) {
         setTimeout(() => {
             $("body").removeClass("game-over");
         }, 200);
-        $("#level-title").text("Game Over! Press Any Key to Restart");
+        $("#level-title").html("Game Over!<br>Your Score: " + (level-1));
+        $("#start-restart-btn").text("Restart Game").show();
         startOver();
     }
 }
@@ -149,10 +154,4 @@ function startOver() {
     started = false;
     gamePattern = [];
     level = 0;
-
-    $(document).one("keydown", function() {
-        $("#level-title").text("Level " + level);
-        nextSequence();
-        started = true;
-    });
 }
