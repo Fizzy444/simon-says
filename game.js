@@ -161,15 +161,15 @@ function checkAnswer(currentLevel) {
 // Reset the game
 function resetGame() {
     gamePattern = [];
-    started = false;
-    level = 0;
     userClickedPattern = [];
+    level = 0;
+    started = false;
     $("body").removeClass("game-over");
 }
 
 // Start over after game over
 function startOver() {
-    started = false;
-    gamePattern = [];
-    level = 0;
+    resetGame();
+    $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level-1));
+    $("#start-restart-btn").text("Restart Game").show();
 }
