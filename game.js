@@ -39,18 +39,15 @@ $(document).ready(function () {
         }
     });
 
+    // Back button to go to difficulty selection
     $("#back-btn").click(function() {
-        // Reset game state
         resetGame();
         started = false;
         gamePattern = [];
         level = 0;
-        
-        // Hide game screen and show difficulty selection
+
         $("#game-screen").hide();
         $("#start-screen").show();
-        
-        // Reset the start/restart button for next time
         $("#start-restart-btn").text("Start Game").show();
         $("#level-title").text("Welcome to Simon!");
     });
@@ -64,7 +61,7 @@ function startGame() {
     resetGame();
 }
 
-// User button click
+// User button click event
 $(".btn").on("click", function () {
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
@@ -77,7 +74,8 @@ $(".btn").on("click", function () {
 function nextSequence() {
     userClickedPattern = [];
     level++;
-    $("#level-title").text("Level " + level);
+    $("#level-title").text("Level " + level); // Update level display
+    console.log("Current Score:", level); // Debugging
 
     if (gameMode === "ultra") {
         playUltraMode();
@@ -144,7 +142,10 @@ function animatePress(currentColour) {
 function checkAnswer(currentLevel) {
     if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
         if (userClickedPattern.length === gamePattern.length) {
-            setTimeout(nextSequence, 1000);
+            setTimeout(() => {
+                $("#level-title").text("Level " + level); // Ensure UI updates correctly
+                nextSequence();
+            }, 1000);
         }
     } else {
         playSound("wrong");
@@ -152,7 +153,7 @@ function checkAnswer(currentLevel) {
         setTimeout(() => {
             $("body").removeClass("game-over");
         }, 200);
-        $("#level-title").html("Game Over!<br>Your Score: " + (level-1));
+        $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level - 1));
         $("#start-restart-btn").text("Restart Game").show();
         startOver();
     }
@@ -169,7 +170,7 @@ function resetGame() {
 
 // Start over after game over
 function startOver() {
+    $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level - 1));
     resetGame();
-    $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level-1));
     $("#start-restart-btn").text("Restart Game").show();
 }
