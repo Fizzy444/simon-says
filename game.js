@@ -2,6 +2,7 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
+var score = 0;
 var started = false;
 var gameMode = "easy"; // Default mode
 var isMuted = false; // Default: Sound ON
@@ -39,17 +40,23 @@ $(document).ready(function () {
         }
     });
 
-    // Back button to go to difficulty selection
+    // Back button click event
     $("#back-btn").click(function() {
         resetGame();
-        started = false;
-        gamePattern = [];
-        level = 0;
-
         $("#game-screen").hide();
         $("#start-screen").show();
         $("#start-restart-btn").text("Start Game").show();
         $("#level-title").text("Welcome to Simon!");
+        $("#current-score").text("Score: 0");
+    });
+
+    // User button clicks
+    $(".btn").on("click", function () {
+        var userChosenColour = $(this).attr("id");
+        userClickedPattern.push(userChosenColour);
+        animatePress(userChosenColour);
+        playSound(userChosenColour);
+        checkAnswer(userClickedPattern.length - 1);
     });
 });
 
@@ -58,24 +65,17 @@ function startGame() {
     $("#start-screen").hide();
     $("#game-screen").show();
     $("#start-restart-btn").show().text("Start Game");
+    $("#current-score").text("Score: 0");
     resetGame();
 }
-
-// User button click event
-$(".btn").on("click", function () {
-    var userChosenColour = $(this).attr("id");
-    userClickedPattern.push(userChosenColour);
-    animatePress(userChosenColour);
-    playSound(userChosenColour);
-    checkAnswer(userClickedPattern.length - 1);
-});
 
 // Next sequence generation
 function nextSequence() {
     userClickedPattern = [];
     level++;
-    $("#level-title").text("Level " + level); // Update level display
-    console.log("Current Score:", level); // Debugging
+    score = level - 1; // Score is always one less than level
+    $("#level-title").text("Level " + level);
+    $("#current-score").text("Score: " + score);
 
     if (gameMode === "ultra") {
         playUltraMode();
@@ -142,10 +142,7 @@ function animatePress(currentColour) {
 function checkAnswer(currentLevel) {
     if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
         if (userClickedPattern.length === gamePattern.length) {
-            setTimeout(() => {
-                $("#level-title").text("Level " + level); // Ensure UI updates correctly
-                nextSequence();
-            }, 1000);
+            setTimeout(nextSequence, 1000);
         }
     } else {
         playSound("wrong");
@@ -153,7 +150,7 @@ function checkAnswer(currentLevel) {
         setTimeout(() => {
             $("body").removeClass("game-over");
         }, 200);
-        $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level - 1));
+        $("#level-title").html("Game Over!<br>Your Score: " + score);
         $("#start-restart-btn").text("Restart Game").show();
         startOver();
     }
@@ -164,13 +161,12 @@ function resetGame() {
     gamePattern = [];
     userClickedPattern = [];
     level = 0;
+    score = 0;
     started = false;
     $("body").removeClass("game-over");
 }
 
 // Start over after game over
 function startOver() {
-    $("#level-title").html("Game Over!<br>Your Score: " + Math.max(0, level - 1));
     resetGame();
-    $("#start-restart-btn").text("Restart Game").show();
 }
