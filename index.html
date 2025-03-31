@@ -9,8 +9,6 @@
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </head>
 <body>
-
-  <!-- Difficulty Selection Screen -->
   <div id="start-screen">
     <h1>Simon Game</h1>
     <h2>Select Difficulty</h2>
@@ -19,13 +17,14 @@
     <button class="difficulty-btn" id="ultra">Ultra Mode</button>
   </div>
 
-  <!-- Game Screen (Hidden by Default) -->
   <div id="game-screen" style="display: none;">
-    <!-- Mute Button -->
     <button id="mute-btn">🔊 Sound On</button>
     <button id="back-btn">← Back</button>
+    
     <h1 id="level-title">Welcome to Simon!</h1>
+    <h2 id="current-score">Score: 0</h2>
     <button id="start-restart-btn">Start Game</button>
+    
     <div class="container">
       <div class="row">
         <div id="green" class="btn green"></div>
@@ -36,10 +35,38 @@
         <div id="blue" class="btn blue"></div>
       </div>
     </div>
+    <button id="how-to-play-btn">❓ How to Play</button>
+  </div>
+
+  <div id="how-to-play-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>How to Play Simon</h2>
+      <div id="how-to-play-easy">
+        <h3>Easy Mode</h3>
+        <p>1. Watch the sequence of colors that Simon shows you</p>
+        <p>2. Repeat the sequence by clicking the colors in the same order</p>
+        <p>3. Each level adds one more color to the sequence</p>
+        <p>4. The full sequence is shown before you need to repeat it</p>
+      </div>
+      <div id="how-to-play-hard">
+        <h3>Hard Mode</h3>
+        <p>1. Watch the sequence carefully - only the new color is shown</p>
+        <p>2. You must remember the entire sequence from memory</p>
+        <p>3. Each level adds one more color to remember</p>
+        <p>4. Only the newest color is displayed each turn</p>
+      </div>
+      <div id="how-to-play-ultra">
+        <h3>Ultra Mode</h3>
+        <p>1. Watch carefully - Simon shows 1-3 new colors each turn</p>
+        <p>2. You must remember the entire growing sequence</p>
+        <p>3. The sequence grows faster with multiple colors per turn</p>
+        <p>4. No repeats - you see each new set only once</p>
+      </div>
+    </div>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="game.js"></script>
-
 </body>
 </html>
