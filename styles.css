@@ -76,33 +76,19 @@ h1, h2 {
 #start-restart-btn:hover {
     background-color: grey;
 }
-#game-screen {
-    position: relative;
-    padding-top: 80px; /* Add space at the top for the mute button */
-}
-
-#level-title {
-    margin-top: 0;
-    padding: 0 20px; /* Add padding to prevent text from touching edges */
-    line-height: 1.3; /* Better line spacing for mobile */
-}
 
 #mute-btn {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid white;
-    border-radius: 5px;
+    background: none;
+    border: none;
     color: white;
-    font-size: 14px; /* Smaller font for mobile */
-    padding: 5px 10px;
+    font-size: 16px;
     cursor: pointer;
     font-family: 'Press Start 2P', cursive;
-    z-index: 10;
 }
 
-/* Add these styles to your existing CSS */
 #back-btn {
     position: absolute;
     top: 20px;
@@ -118,15 +104,67 @@ h1, h2 {
     z-index: 10;
 }
 
-/* Adjust mute button position to account for back button */
-#mute-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    /* ... keep existing mute button styles ... */
+#current-score {
+    color: white;
+    margin: 10px 0;
+    font-size: 1.2rem;
 }
 
-/* Mobile adjustments */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #011F3F;
+    margin: 10% auto;
+    padding: 20px;
+    border: 5px solid white;
+    width: 80%;
+    max-width: 600px;
+    color: white;
+    position: relative;
+}
+
+.close {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ccc;
+}
+
+#how-to-play-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    border-radius: 5px;
+}
+
+#how-to-play-btn:hover {
+    background-color: grey;
+}
+
 @media (max-width: 600px) {
     #back-btn, #mute-btn {
         font-size: 12px;
@@ -139,34 +177,18 @@ h1, h2 {
     #mute-btn {
         right: 10px;
     }
-}
-
-/* Mobile-specific adjustments */
-@media (max-width: 600px) {
-    #game-screen {
-        padding-top: 60px; /* Less padding on very small screens */
-    }
-    
-    h1 {
-        font-size: 1.5rem; /* Smaller heading on mobile */
-    }
-    
-    #mute-btn {
-        font-size: 12px;
-        padding: 3px 6px;
-        top: 10px;
-        right: 10px;
-    }
-    
     .btn {
         height: 120px;
         width: 120px;
         margin: 8px;
         border: 8px solid black;
     }
-    
     #start-restart-btn {
         font-size: 16px;
         padding: 8px 16px;
+    }
+    .modal-content {
+        margin: 20% auto;
+        padding: 15px;
     }
 }
