@@ -2,7 +2,7 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
-var score = 0;
+var score = 1;
 var started = false;
 var gameMode = "easy";
 var isMuted = false;
@@ -43,7 +43,6 @@ $(document).ready(function () {
         $("#start-screen").show();
         $("#start-restart-btn").text("Start Game").show();
         $("#level-title").text("Welcome to Simon!");
-        $("#current-score").text("Score: 0");
     });
 
     $("#how-to-play-btn").click(function() {
@@ -72,21 +71,19 @@ $(document).ready(function () {
 });
 
 function startGame() {
-    $("#start-screen").hide();  
-    $("#game-screen").show();   
-    $("#how-to-play-btn").show();
-    $("#start-restart-btn").show().text("Start Game"); 
-    $("#current-score").text("Score: 0");
+    $("#start-screen").hide();
+    $("#game-screen").show();
+    $("#how-to-play-btn").show(); 
+    $("#start-restart-btn").show().text("Start Game");
+    $("#level-title").text("Level " + level);
     resetGame();
 }
-
 
 function nextSequence() {
     userClickedPattern = [];
     level++;
-    score = level - 1;
+    score = level - 1; 
     $("#level-title").text("Level " + level);
-    $("#current-score").text("Score: " + score);
 
     if (gameMode === "ultra") {
         playUltraMode();
@@ -155,7 +152,7 @@ function checkAnswer(currentLevel) {
         setTimeout(() => {
             $("body").removeClass("game-over");
         }, 200);
-        $("#level-title").html("Game Over!<br>Your Score: " + score);
+        $("#level-title").html("Game Over!<br>Final Score: " + score);
         $("#start-restart-btn").text("Restart Game").show();
         startOver();
     }
@@ -165,7 +162,7 @@ function resetGame() {
     gamePattern = [];
     userClickedPattern = [];
     level = 0;
-    score = 0;
+    score = 1;
     started = false;
     $("body").removeClass("game-over");
 }
