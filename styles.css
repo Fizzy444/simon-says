@@ -104,12 +104,6 @@ h1, h2 {
     z-index: 10;
 }
 
-#current-score {
-    color: white;
-    margin: 10px 0;
-    font-size: 1.2rem;
-}
-
 .modal {
     display: none;
     position: fixed;
@@ -145,9 +139,10 @@ h1, h2 {
 .close:hover {
     color: #ccc;
 }
+/* ... (keep all existing styles) ... */
 
 #how-to-play-btn {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -159,10 +154,35 @@ h1, h2 {
     cursor: pointer;
     font-family: 'Press Start 2P', cursive;
     border-radius: 5px;
+    z-index: 5;
 }
 
 #how-to-play-btn:hover {
     background-color: grey;
+}
+
+/* ... (keep all other existing styles) ... */
+#how-to-play-btn {
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    padding: 10px 20px;
+    border: none;
+    margin: 10px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#how-to-play-btn:hover {
+    background-color: grey;
+}
+
+#how-to-play-easy,
+#how-to-play-hard,
+#how-to-play-ultra {
+    display: none;
+    text-align: left;
+    line-height: 1.6;
 }
 
 @media (max-width: 600px) {
